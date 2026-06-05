@@ -43,36 +43,36 @@ WHERE id IS NULL
 Source: Simple Select Query
 
 SELECT
-    global_id__sys,
-    link__sys,
-    name__v,
-    created_by__v,
-    modified_by__v,
     case_response__c,
-    document__c,
+    created_by__v,
     created_date__v,
-    modified_date__v,
-    id,
-    status__v,
+    document__c,
+    document_order__c,
     document_unbound__c,
-    document_order__c
+    global_id__sys,
+    id,
+    link__sys,
+    modified_by__v,
+    modified_date__v,
+    name__v,
+    status__v
 FROM phone_fulfillment_document__c;
 
 Target: Query fetched from TS03 PDF
 
 SELECT
-    global_id__sys,
-    link__sys,
-    name__v,
-    created_by__v,
-    modified_by__v,
     case_response__c,
+    created_by__v,
+    SUBSTRING(date_format(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),1,10)||'T'||SUBSTRING(date_format(created_date__v, 'YYYY-MM-dd HH:mm:ss.SSS'),12,8)||'Z' as created_date__v,
     document__c,
-    SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS created_date__v,
-    SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS modified_date__v,
-    id,
-    status__v,
+    document_order__c,
     document_unbound__c,
-    document_order__c
+    global_id__sys,
+    id,
+    link__sys,
+    modified_by__v,
+    SUBSTRING(date_format(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),1,10)||'T'||SUBSTRING(date_format(modified_date__v, 'YYYY-MM-dd HH:mm:ss.SSS'),12,8)||'Z' as modified_date__v,
+    name__v,
+    status__v
 FROM raw_vmis.phone_fulfillment_document__c
 WHERE hard_deleted_flag = 'N';
