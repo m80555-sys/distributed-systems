@@ -1,0 +1,231 @@
+case_response__v full queries
+
+1. Record Count Verification
+
+Source:
+
+SELECT
+    id
+FROM case_response__v;
+
+Target:
+
+SELECT
+    COUNT(*) AS record_count
+FROM raw_vmis.case_response__v
+WHERE hard_deleted_flag = 'N'
+  AND id != 'V1700000006E001';
+
+
+2. Uniqueness Verification
+
+SELECT
+    id,
+    COUNT(*) AS duplicate_count
+FROM raw_vmis.case_response__v
+WHERE hard_deleted_flag = 'N'
+  AND id != 'V1700000006E001'
+GROUP BY
+    id
+HAVING COUNT(*) > 1;
+
+
+3. Not Null Verification
+
+SELECT *
+FROM raw_vmis.case_response__v
+WHERE id IS NULL
+   OR insrt_ts IS NULL
+   OR updt_ts IS NULL
+   OR hard_deleted_flag IS NULL;
+
+
+4. Data Verification
+
+Source: Simple Select Query
+
+SELECT
+    allow_download__v,
+    allow_source_document_download__v,
+    asia_cl__c,
+    auto_response_case_number__c,
+    bundle_preferred_delivery_method__c,
+    bundled_response__c,
+    cancellation_comments__c,
+    cancellation_reason__c,
+    case__v,
+    case_contact_specialty__c,
+    case_contact_type__c,
+    case_for_bundle_naming__c,
+    case_request__v,
+    case_response_ending_state__c,
+    case_snapshot__c,
+    country1__c,
+    country__v,
+    cover_letter__v,
+    created_by__v,
+    created_date__v,
+    email_subject__v,
+    email_template__v,
+    email_template_instructions__c,
+    event__c,
+    event__v,
+    event_type__c,
+    facilitator_type1__c,
+    facilitator_type__c,
+    global_id__sys,
+    id,
+    include_fulfillment_documents__c,
+    known_address_affiliate__c,
+    known_address_country__c,
+    label_offered__c,
+    language__v,
+    lifecycle__v,
+    link__sys,
+    link_expires_in_number_of_days__v,
+    modified_by__v,
+    modified_date__v,
+    multi_link__c,
+    name__v,
+    object_type__v,
+    part_of_a_bundled_response__c,
+    preferred_response_method__c,
+    preview_response_package_link__v,
+    product__v,
+    product_category__c,
+    product_event__c,
+    product_static__c,
+    qualifying_statement_rich_text__c,
+    referred_to_hcp__c,
+    referring_to_an_internal_department__c,
+    regenerate_cover_letter__c,
+    relevant_drug_uk__c,
+    reply_to__v,
+    requestor_class__c,
+    required_followup__c,
+    response_bundle__c,
+    response_bundle_type__c,
+    response_document_link_rich_text__c,
+    response_document_unbound__v,
+    response_link_revoked_on__v,
+    rightfax_response__c,
+    source__v,
+    standard_response__v,
+    standard_response_documents_added__c,
+    state__v,
+    status__v,
+    therapeutic_area__c,
+    translated_product_name1__c,
+    translated_product_name__c,
+    val_gc_ll__c,
+    val_pd__c,
+    facilitator__c,
+    fax__c,
+    fax_number__v,
+    response_email__c,
+    case_response__v,
+    email_address__v,
+    faq_document__c,
+    faq_document_unbound__c,
+    interaction_type__v,
+    number_of_attempts__c,
+    response_content__v,
+    response_list__v,
+    response_list_preview__v,
+    response_template__c
+FROM case_response__v;
+
+Target: Query fetched from TS03 PDF
+
+SELECT
+    allow_download__v,
+    allow_source_document_download__v,
+    asia_cl__c,
+    auto_response_case_number__c,
+    bundle_preferred_delivery_method__c,
+    bundled_response__c,
+    cancellation_comments__c,
+    cancellation_reason__c,
+    case__v,
+    case_contact_specialty__c,
+    case_contact_type__c,
+    case_for_bundle_naming__c,
+    case_request__v,
+    case_response_ending_state__c,
+    case_snapshot__c,
+    country1__c,
+    country__v,
+    cover_letter__v,
+    created_by__v,
+    SUBSTRING(date_format(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),1,10)||'T'||SUBSTRING(date_format(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),12,8)||'Z' as created_date__v,
+    email_subject__v,
+    email_template__v,
+    email_template_instructions__c,
+    event__c,
+    event__v,
+    event_type__c,
+    facilitator_type1__c,
+    facilitator_type__c,
+    global_id__sys,
+    id,
+    include_fulfillment_documents__c,
+    known_address_affiliate__c,
+    known_address_country__c,
+    label_offered__c,
+    language__v,
+    lifecycle__v,
+    link__sys,
+    link_expires_in_number_of_days__v,
+    modified_by__v,
+    SUBSTRING(date_format(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),1,10)||'T'||SUBSTRING(date_format(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'),12,8)||'Z' as modified_date__v,
+    multi_link__c,
+    name__v,
+    object_type__v,
+    part_of_a_bundled_response__c,
+    preferred_response_method__c,
+    preview_response_package_link__v,
+    product__v,
+    product_category__c,
+    product_event__c,
+    product_static__c,
+    qualifying_statement_rich_text__c,
+    referred_to_hcp__c,
+    referring_to_an_internal_department__c,
+    regenerate_cover_letter__c,
+    relevant_drug_uk__c,
+    reply_to__v,
+    requestor_class__c,
+    required_followup__c,
+    response_bundle__c,
+    response_bundle_type__c,
+    response_document_link_rich_text__c,
+    response_document_unbound__v,
+    SUBSTRING(date_format(response_link_revoked_on__v, 'YYYY-MM-dd HH:mm:ss.SSS'),1,10)||'T'||SUBSTRING(date_format(response_link_revoked_on__v, 'YYYY-MM-dd HH:mm:ss.SSS'),12,8)||'Z' as response_link_revoked_on__v,
+    rightfax_response__c,
+    source__v,
+    standard_response__v,
+    standard_response_documents_added__c,
+    state__v,
+    status__v,
+    therapeutic_area__c,
+    translated_product_name1__c,
+    translated_product_name__c,
+    val_gc_ll__c,
+    val_pd__c,
+    CAST(aes_decrypt(unbase64(facilitator__c), "SaGRHRWdRV05qWlhOeklpQTZJSHNnSW0") AS STRING) AS facilitator__c,
+    CAST(aes_decrypt(unbase64(fax__c), "SaGRHRWdRV05qWlhOeklpQTZJSHNnSW0") AS STRING) AS fax__c,
+    CAST(aes_decrypt(unbase64(fax_number__v), "SaGRHRWdRV05qWlhOeklpQTZJSHNnSW0") AS STRING) AS fax_number__v,
+    CAST(aes_decrypt(unbase64(response_email__c), "SaGRHRWdRV05qWlhOeklpQTZJSHNnSW0") AS STRING) AS response_email__c,
+    case_response__v,
+    email_address__v,
+    faq_document__c,
+    faq_document_unbound__c,
+    interaction_type__v,
+    number_of_attempts__c,
+    response_content__v,
+    response_list__v,
+    response_list_preview__v,
+    response_template__c
+FROM raw_vmis.case_response__v
+WHERE hard_deleted_flag = 'N'
+  AND id != 'V1700000006E001';

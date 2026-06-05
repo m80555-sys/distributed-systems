@@ -1,0 +1,112 @@
+quality_control_check__c full queries
+
+1. Record Count Verification
+
+Source:
+
+SELECT
+    id
+FROM quality_control_check__c;
+
+Target:
+
+SELECT
+    COUNT(*) AS record_count
+FROM raw_vmis.quality_control_check__c
+WHERE hard_deleted_flag = 'N';
+
+
+2. Uniqueness Verification
+
+SELECT
+    id,
+    COUNT(*) AS duplicate_count
+FROM raw_vmis.quality_control_check__c
+WHERE hard_deleted_flag = 'N'
+GROUP BY
+    id
+HAVING COUNT(*) > 1;
+
+
+3. Not Null Verification
+
+SELECT *
+FROM raw_vmis.quality_control_check__c
+WHERE id IS NULL
+   OR insrt_ts IS NULL
+   OR updt_ts IS NULL
+   OR hard_deleted_flag IS NULL;
+
+
+4. Data Verification
+
+Source: Simple Select Query
+
+SELECT
+    global_id__sys,
+    link__sys,
+    name__v,
+    case_priority_accuracy__c,
+    correct_codingfields__c,
+    include_manager__c,
+    created_by__v,
+    modified_by__v,
+    state_stage_id__sys,
+    stage__sys,
+    case__c,
+    country__c,
+    affiliate__c,
+    case_owner__c,
+    created_date__v,
+    modified_date__v,
+    remediation_completed_date__c,
+    remediation_due_date__c,
+    id,
+    status__v,
+    case_contact_accuracy__c,
+    case_request_accuracy__c,
+    case_response_accuracy__c,
+    cover_letter_rating__c,
+    fulfillment_documents_rating__c,
+    overall_case_rating__c,
+    overall_rating__c,
+    lifecycle__v,
+    state__v,
+    detailed_narrative__c
+FROM quality_control_check__c;
+
+Target: Query fetched from TS03 PDF
+
+SELECT
+    global_id__sys,
+    link__sys,
+    name__v,
+    case_priority_accuracy__c,
+    correct_codingfields__c,
+    include_manager__c,
+    created_by__v,
+    modified_by__v,
+    state_stage_id__sys,
+    stage__sys,
+    case__c,
+    country__c,
+    affiliate__c,
+    case_owner__c,
+    SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS created_date__v,
+    SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS modified_date__v,
+    DATE_FORMAT(remediation_completed_date__c, 'yyyy-MM-dd') AS remediation_completed_date__c,
+    DATE_FORMAT(remediation_due_date__c, 'yyyy-MM-dd') AS remediation_due_date__c,
+    id,
+    status__v,
+    case_contact_accuracy__c,
+    case_request_accuracy__c,
+    case_response_accuracy__c,
+    cover_letter_rating__c,
+    fulfillment_documents_rating__c,
+    overall_case_rating__c,
+    overall_rating__c,
+    lifecycle__v,
+    state__v,
+    detailed_narrative__c
+FROM raw_vmis.quality_control_check__c
+WHERE hard_deleted_flag = 'N';

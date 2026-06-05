@@ -1,0 +1,94 @@
+response_document_access__v full queries
+
+1. Record Count Verification
+
+Source:
+
+SELECT
+    id
+FROM response_document_access__v;
+
+Target:
+
+SELECT
+    COUNT(*) AS record_count
+FROM raw_vmis.response_document_access__v
+WHERE hard_deleted_flag = 'N';
+
+
+2. Uniqueness Verification
+
+SELECT
+    id,
+    COUNT(*) AS duplicate_count
+FROM raw_vmis.response_document_access__v
+WHERE hard_deleted_flag = 'N'
+GROUP BY
+    id
+HAVING COUNT(*) > 1;
+
+
+3. Not Null Verification
+
+SELECT *
+FROM raw_vmis.response_document_access__v
+WHERE id IS NULL
+   OR insrt_ts IS NULL
+   OR updt_ts IS NULL
+   OR hard_deleted_flag IS NULL;
+
+
+4. Data Verification
+
+Source: Simple Select Query
+
+SELECT
+    name__v,
+    global_id__sys,
+    link__sys,
+    access_token__v,
+    latest_response_document_link__v,
+    created_by__v,
+    modified_by__v,
+    document__v,
+    fulfillment_document__v,
+    case_response__v,
+    created_date__v,
+    modified_date__v,
+    last_view__v,
+    last_rendition_download__v,
+    last_source_download__v,
+    id,
+    status__v,
+    document_unbound__v,
+    views__v,
+    rendition_downloads__v,
+    source_downloads__v
+FROM response_document_access__v;
+
+Target: Query fetched from TS03 PDF
+
+SELECT
+    name__v,
+    global_id__sys,
+    link__sys,
+    access_token__v,
+    latest_response_document_link__v,
+    created_by__v,
+    modified_by__v,
+    document__v,
+    fulfillment_document__v,
+    case_response__v,
+    SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(created_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS created_date__v,
+    SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(modified_date__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS modified_date__v,
+    SUBSTRING(DATE_FORMAT(last_view__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(last_view__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS last_view__v,
+    SUBSTRING(DATE_FORMAT(last_rendition_download__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(last_rendition_download__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS last_rendition_download__v,
+    SUBSTRING(DATE_FORMAT(last_source_download__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 1, 10) || 'T' || SUBSTRING(DATE_FORMAT(last_source_download__v, 'yyyy-MM-dd HH:mm:ss.SSS'), 12, 8) || 'Z' AS last_source_download__v,
+    id,
+    status__v,
+    document_unbound__v,
+    views__v,
+    rendition_downloads__v,
+    source_downloads__v
+FROM raw_vmis.response_document_access__v
+WHERE hard_deleted_flag = 'N';
