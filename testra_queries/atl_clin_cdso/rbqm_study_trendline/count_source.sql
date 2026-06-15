@@ -1,5 +1,5 @@
--- Testra Count validation for atl_clin_cdso.rbqm_study_trendline.
--- Compares source-derived and target primary key counts for the current cycle.
+-- Testra Count source validation for atl_clin_cdso.rbqm_study_trendline.
+-- Returns the source-derived primary key row count for the current cycle.
 -- Replace ${cycle_id} with the latest cycle id for the run, formatted as YYYY-MM-DD.
 
 WITH filtered_source AS (
@@ -60,26 +60,7 @@ source_pk AS (
         FROM intervals
     ) ranked_intervals
     WHERE bucket_rank <= 5
-),
-target_pk AS (
-    SELECT
-        study_id,
-        snapshot_date,
-        interval_start_date
-    FROM atl_clin_cdso.rbqm_study_trendline
-    WHERE snapshot_date = TO_DATE('${cycle_id}', 'yyyy-MM-dd')
-),
-source_count AS (
-    SELECT COUNT(*) AS pk_count
-    FROM source_pk
-),
-target_count AS (
-    SELECT COUNT(*) AS pk_count
-    FROM target_pk
 )
 SELECT
-    source_count.pk_count AS source_pk_count,
-    target_count.pk_count AS target_pk_count
-FROM source_count
-CROSS JOIN target_count
-WHERE source_count.pk_count <> target_count.pk_count;
+    COUNT(*) AS source_pk_count
+FROM source_pk;
